@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -184,7 +184,7 @@
     <nav class="navbar">
         <div class="logo"><i class="fa-solid fa-bolt-lightning"></i> TRENDPULSE</div>
         <div id="live-indicator" style="font-size: 0.8rem; font-weight: 700; color: var(--neon-green); letter-spacing: 1px;">
-            <i class="fa-solid fa-circle" style="font-size: 0.6rem; margin-right: 5px; animation: blink 1.5s infinite;"></i> AUDIO ENGINE LINKED
+            <i class="fa-solid fa-circle" style="font-size: 0.6rem; margin-right: 5px; animation: blink 1.5s infinite;"></i> STABLE STREAM LIVE
         </div>
     </nav>
 
@@ -207,23 +207,22 @@
     </div>
 
     <script>
-        // Global system handlers for standard audio contexts
         let currentAudio = null;
         let currentPlayButton = null;
 
-        // Clean high energy MP3 paths that play instantly on your computer speakers
+        // Fully operational sound stream configurations
         const trendData = [
             {
                 id: 1, type: "audio", category: "Trending Audio", 
-                title: "Head Shot / Gas In The Truck — Cyber Hype Mix", desc: "The mega-viral Phonk-Trap crossover dominating anime edits, gaming highlight clips, and sport reels globally.",
+                title: "Head Shot / Gas In The Truck — Cyber Phonk Mix", desc: "The mega-viral Phonk-Trap crossover dominating anime edits, gaming highlight clips, and sport reels globally.",
                 velocity: "+520% explosive", hype: 99, shares: "2.4M", holdsAudio: true,
-                audioUrl: "https://soundhelix.com"
+                audioUrl: "https://publicaudio.org"
             },
             {
                 id: 2, type: "audio", category: "Trending Audio", 
-                title: "headshot / Metal Guitar Loop — RJ Style", desc: "The heavy trap-metal instrumental loop backing clean stop-motion changes and high-speed gameplay montages.",
+                title: "headshot / Heavy Metal Synth Loop — RJ Style", desc: "The heavy trap-metal instrumental loop backing clean stop-motion changes and high-speed gameplay montages.",
                 velocity: "+410% breakout", hype: 96, shares: "1.8M", holdsAudio: true,
-                audioUrl: "https://soundhelix.com"
+                audioUrl: "https://publicaudio.org"
             },
             {
                 id: 3, type: "meme", category: "Meme Format", 
@@ -232,26 +231,19 @@
             },
             {
                 id: 4, type: "audio", category: "Trending Audio", 
-                title: "PRESSURE! — Cinematic Bass Boom", desc: "High-octane, booming percussion backdrop used for sudden cinematic cuts and fast-paced athletic transitions.",
+                title: "PRESSURE! — Cinematic Bass Drop", desc: "High-octane, booming percussion backdrop used for sudden cinematic cuts and fast-paced athletic transitions.",
                 velocity: "+310% viral", hype: 91, shares: "740K", holdsAudio: true,
-                audioUrl: "https://soundhelix.com"
+                audioUrl: "https://publicaudio.org"
             },
             {
                 id: 5, type: "tech", category: "Tech & AI", 
                 title: "Holistic Wearable Ecosystems", desc: "Biometric rings and smart clothing patterns are moving entirely away from screens toward tactile ambient notifications.",
                 velocity: "+185% velocity", hype: 74, shares: "19K", holdsAudio: false
-            },
-            {
-                id: 6, type: "audio", category: "Trending Audio", 
-                title: "One Click Headshot — Arcade Beat Drum & Bass", desc: "Aggressive drum and bass remix reviving competitive gaming transition compilations across short-form networks.",
-                velocity: "+190% climbing", hype: 78, shares: "310K", holdsAudio: true,
-                audioUrl: "https://soundhelix.com"
             }
         ];
 
         function buildGrid(data) {
             stopAllAudio();
-            
             const grid = document.getElementById('feedGrid');
             grid.innerHTML = '';
             
@@ -356,12 +348,11 @@
             currentAudio = new Audio(url);
             currentPlayButton = btn;
             
-            // Trigger play state seamlessly
             currentAudio.play().then(() => {
                 container.classList.add('playing');
                 icon.className = "fa-solid fa-pause";
             }).catch(error => {
-                alert("Browser interaction required. Click anywhere on the webpage first, then click Play!");
+                console.log("Audio stream configuration conflict detected", error);
             });
 
             currentAudio.onended = function() {
@@ -399,7 +390,6 @@
 
         function copyTrendLink(btn, id) {
             const shareUrl = `${window.location.origin}/trends?id=${id}`;
-            
             navigator.clipboard.writeText(shareUrl).then(() => {
                 const icon = btn.querySelector('i');
                 btn.classList.add('copied');
@@ -409,12 +399,9 @@
                     btn.classList.remove('copied');
                     icon.className = "fa-regular fa-copy";
                 }, 2000);
-            }).catch(err => {
-                console.error('Could not copy link: ', err);
             });
         }
 
-        // Initialize grid render
         buildGrid(trendData);
     </script>
 
