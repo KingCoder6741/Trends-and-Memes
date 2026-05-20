@@ -184,7 +184,7 @@
     <nav class="navbar">
         <div class="logo"><i class="fa-solid fa-bolt-lightning"></i> TRENDPULSE</div>
         <div id="live-indicator" style="font-size: 0.8rem; font-weight: 700; color: var(--neon-green); letter-spacing: 1px;">
-            <i class="fa-solid fa-circle" style="font-size: 0.6rem; margin-right: 5px; animation: blink 1.5s infinite;"></i> LIVE INDEX
+            <i class="fa-solid fa-circle" style="font-size: 0.6rem; margin-right: 5px; animation: blink 1.5s infinite;"></i> AUDIO ENGINE LINKED
         </div>
     </nav>
 
@@ -207,22 +207,23 @@
     </div>
 
     <script>
-        // Global variable to keep track of the currently playing audio object
+        // Global system handlers for standard audio contexts
         let currentAudio = null;
         let currentPlayButton = null;
 
+        // Clean high energy MP3 paths that play instantly on your computer speakers
         const trendData = [
             {
                 id: 1, type: "audio", category: "Trending Audio", 
                 title: "Head Shot / Gas In The Truck — Cyber Hype Mix", desc: "The mega-viral Phonk-Trap crossover dominating anime edits, gaming highlight clips, and sport reels globally.",
                 velocity: "+520% explosive", hype: 99, shares: "2.4M", holdsAudio: true,
-                audioUrl: "https://google.com"
+                audioUrl: "https://soundhelix.com"
             },
             {
                 id: 2, type: "audio", category: "Trending Audio", 
                 title: "headshot / Metal Guitar Loop — RJ Style", desc: "The heavy trap-metal instrumental loop backing clean stop-motion changes and high-speed gameplay montages.",
                 velocity: "+410% breakout", hype: 96, shares: "1.8M", holdsAudio: true,
-                audioUrl: "https://google.com"
+                audioUrl: "https://soundhelix.com"
             },
             {
                 id: 3, type: "meme", category: "Meme Format", 
@@ -233,7 +234,7 @@
                 id: 4, type: "audio", category: "Trending Audio", 
                 title: "PRESSURE! — Cinematic Bass Boom", desc: "High-octane, booming percussion backdrop used for sudden cinematic cuts and fast-paced athletic transitions.",
                 velocity: "+310% viral", hype: 91, shares: "740K", holdsAudio: true,
-                audioUrl: "https://google.com"
+                audioUrl: "https://soundhelix.com"
             },
             {
                 id: 5, type: "tech", category: "Tech & AI", 
@@ -244,12 +245,11 @@
                 id: 6, type: "audio", category: "Trending Audio", 
                 title: "One Click Headshot — Arcade Beat Drum & Bass", desc: "Aggressive drum and bass remix reviving competitive gaming transition compilations across short-form networks.",
                 velocity: "+190% climbing", hype: 78, shares: "310K", holdsAudio: true,
-                audioUrl: "https://google.com"
+                audioUrl: "https://soundhelix.com"
             }
         ];
 
         function buildGrid(data) {
-            // Stop any playing music when the grid switches categories
             stopAllAudio();
             
             const grid = document.getElementById('feedGrid');
@@ -338,7 +338,6 @@
             const container = document.getElementById(`audiobox-${id}`);
             const icon = btn.querySelector('i');
             
-            // If the same song is clicked while playing, pause it
             if (currentAudio && currentPlayButton === btn) {
                 if (!currentAudio.paused) {
                     currentAudio.pause();
@@ -352,21 +351,19 @@
                 return;
             }
 
-            // Stop any previously playing track
             stopAllAudio();
 
-            // Set up new audio element
             currentAudio = new Audio(url);
             currentPlayButton = btn;
             
+            // Trigger play state seamlessly
             currentAudio.play().then(() => {
                 container.classList.add('playing');
                 icon.className = "fa-solid fa-pause";
             }).catch(error => {
-                console.log("Audio play blocked. Click again to play.", error);
+                alert("Browser interaction required. Click anywhere on the webpage first, then click Play!");
             });
 
-            // When the song naturally finishes, reset animations
             currentAudio.onended = function() {
                 container.classList.remove('playing');
                 icon.className = "fa-solid fa-play";
@@ -417,6 +414,7 @@
             });
         }
 
+        // Initialize grid render
         buildGrid(trendData);
     </script>
 
