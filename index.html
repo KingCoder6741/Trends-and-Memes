@@ -207,16 +207,22 @@
     </div>
 
     <script>
+        // Global variable to keep track of the currently playing audio object
+        let currentAudio = null;
+        let currentPlayButton = null;
+
         const trendData = [
             {
                 id: 1, type: "audio", category: "Trending Audio", 
-                title: "Head Shot / Gas In The Truck — iShowSpeed", desc: "The mega-viral Phonk-Trap crossover dominating anime edits, gaming highlight clips, and sport reels globally.",
-                velocity: "+520% explosive", hype: 99, shares: "2.4M", holdsAudio: true
+                title: "Head Shot / Gas In The Truck — Cyber Hype Mix", desc: "The mega-viral Phonk-Trap crossover dominating anime edits, gaming highlight clips, and sport reels globally.",
+                velocity: "+520% explosive", hype: 99, shares: "2.4M", holdsAudio: true,
+                audioUrl: "https://google.com"
             },
             {
                 id: 2, type: "audio", category: "Trending Audio", 
-                title: "headshot — ptasinski & RJ Pasin", desc: "The heavy trap-metal instrumental loop backing clean stop-motion changes and high-speed gameplay montages.",
-                velocity: "+410% breakout", hype: 96, shares: "1.8M", holdsAudio: true
+                title: "headshot / Metal Guitar Loop — RJ Style", desc: "The heavy trap-metal instrumental loop backing clean stop-motion changes and high-speed gameplay montages.",
+                velocity: "+410% breakout", hype: 96, shares: "1.8M", holdsAudio: true,
+                audioUrl: "https://google.com"
             },
             {
                 id: 3, type: "meme", category: "Meme Format", 
@@ -225,8 +231,9 @@
             },
             {
                 id: 4, type: "audio", category: "Trending Audio", 
-                title: "PRESSURE! — Nyck Caution", desc: "High-octane, booming percussion backdrop used for sudden cinematic cuts and fast-paced athletic transitions.",
-                velocity: "+310% viral", hype: 91, shares: "740K", holdsAudio: true
+                title: "PRESSURE! — Cinematic Bass Boom", desc: "High-octane, booming percussion backdrop used for sudden cinematic cuts and fast-paced athletic transitions.",
+                velocity: "+310% viral", hype: 91, shares: "740K", holdsAudio: true,
+                audioUrl: "https://google.com"
             },
             {
                 id: 5, type: "tech", category: "Tech & AI", 
@@ -235,12 +242,16 @@
             },
             {
                 id: 6, type: "audio", category: "Trending Audio", 
-                title: "One Click Headshot — Grafix Remix", desc: "Aggressive drum and bass remix reviving competitive gaming transition compilations across short-form networks.",
-                velocity: "+190% climbing", hype: 78, shares: "310K", holdsAudio: true
+                title: "One Click Headshot — Arcade Beat Drum & Bass", desc: "Aggressive drum and bass remix reviving competitive gaming transition compilations across short-form networks.",
+                velocity: "+190% climbing", hype: 78, shares: "310K", holdsAudio: true,
+                audioUrl: "https://google.com"
             }
         ];
 
         function buildGrid(data) {
+            // Stop any playing music when the grid switches categories
+            stopAllAudio();
+            
             const grid = document.getElementById('feedGrid');
             grid.innerHTML = '';
             
@@ -253,7 +264,7 @@
                 if(item.holdsAudio) {
                     audioBoxMarkup = `
                         <div class="audio-preview-box" id="audiobox-${item.id}">
-                            <button class="play-btn" onclick="toggleAudio(this, ${item.id})">
+                            <button class="play-btn" onclick="toggleAudio(this, '${item.audioUrl}', ${item.id})">
                                 <i class="fa-solid fa-play"></i>
                             </button>
                             <div class="audio-wave">
@@ -323,23 +334,58 @@
             }
         }
 
-        function toggleAudio(btn, id) {
+        function toggleAudio(btn, url, id) {
             const container = document.getElementById(`audiobox-${id}`);
             const icon = btn.querySelector('i');
             
-            document.querySelectorAll('.audio-preview-box').forEach(box => {
-                if(box.id !== `audiobox-${id}`) {
-                    box.classList.remove('playing');
-                    box.querySelector('.play-btn i').className = "fa-solid fa-play";
+            // If the same song is clicked while playing, pause it
+            if (currentAudio && currentPlayButton === btn) {
+                if (!currentAudio.paused) {
+                    currentAudio.pause();
+                    container.classList.remove('playing');
+                    icon.className = "fa-solid fa-play";
+                } else {
+                    currentAudio.play();
+                    container.classList.add('playing');
+                    icon.className = "fa-solid fa-pause";
                 }
+                return;
+            }
+
+            // Stop any previously playing track
+            stopAllAudio();
+
+            // Set up new audio element
+            currentAudio = new Audio(url);
+            currentPlayButton = btn;
+            
+            currentAudio.play().then(() => {
+                container.classList.add('playing');
+                icon.className = "fa-solid fa-pause";
+            }).catch(error => {
+                console.log("Audio play blocked. Click again to play.", error);
             });
 
-            container.classList.toggle('playing');
-            if(container.classList.contains('playing')) {
-                icon.className = "fa-solid fa-pause";
-            } else {
+            // When the song naturally finishes, reset animations
+            currentAudio.onended = function() {
+                container.classList.remove('playing');
                 icon.className = "fa-solid fa-play";
+                currentAudio = null;
+                currentPlayButton = null;
+            };
+        }
+
+        function stopAllAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
             }
+            document.querySelectorAll('.audio-preview-box').forEach(box => {
+                box.classList.remove('playing');
+                const playBtnIcon = box.querySelector('.play-btn i');
+                if (playBtnIcon) playBtnIcon.className = "fa-solid fa-play";
+            });
+            currentPlayButton = null;
         }
 
         function handleUpvote(btn, type) {
@@ -355,7 +401,6 @@
         }
 
         function copyTrendLink(btn, id) {
-            // Generate mock share url based on item ID
             const shareUrl = `${window.location.origin}/trends?id=${id}`;
             
             navigator.clipboard.writeText(shareUrl).then(() => {
@@ -363,7 +408,6 @@
                 btn.classList.add('copied');
                 icon.className = "fa-solid fa-check";
                 
-                // Revert icon status back after 2 seconds
                 setTimeout(() => {
                     btn.classList.remove('copied');
                     icon.className = "fa-regular fa-copy";
